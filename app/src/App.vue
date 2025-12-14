@@ -45,24 +45,44 @@ function addCustomDishCount(value: unknown) {
       type: 'error',
       theme: 'light',
     })
-  } else {
-    dishPrices.value?.push(price)
-    dishCntMap.set(price, 1)
-    total.value += price
+  }
+
+  const samePricefound = dishPrices.value?.find((element) => element === price)
+  if (samePricefound !== undefined) {
     new Toast({
       position: 'top-center',
-      toastMsg: '追加に成功しました。',
+      toastMsg: '既に追加されている値段です。',
       autoCloseTime: 3000,
       canClose: true,
       showProgress: false,
-      type: 'success',
+      type: 'error',
       theme: 'light',
     })
+    return
   }
+
+  dishPrices.value?.push(price)
+  dishPrices.value?.sort((a, b) => a - b)
+  dishCntMap.set(price, 1)
+  total.value += price
+  customPrice.value = undefined
+  new Toast({
+    position: 'top-center',
+    toastMsg: '追加に成功しました。',
+    autoCloseTime: 3000,
+    canClose: true,
+    showProgress: false,
+    type: 'success',
+    theme: 'light',
+  })
 }
 
 function clearCustomDishCount() {
   customPrice.value = undefined
+}
+
+function resetMinPrice() {
+  minPrice.value = undefined
 }
 
 watch(minPrice, (selectedPrice) => {
@@ -143,6 +163,9 @@ watch(minPrice, (selectedPrice) => {
       </div>
       <div class="reset-area my-4">
         <DishButton @click="clearTotal()" :title="'すべての計算をクリア'" :font-size="'14px'" />
+      </div>
+      <div>
+        <DishButton @click="resetMinPrice()" :title="'1皿の値段選択に戻る'" :font-size="'13px'" />
       </div>
     </div>
   </div>
