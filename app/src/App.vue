@@ -86,6 +86,9 @@ function resetMinPrice() {
 }
 
 watch(minPrice, (selectedPrice) => {
+  if (selectedPrice === undefined) {
+    return
+  }
   switch (selectedPrice) {
     case '115':
       initDishCntMapping(MENU_PRICE_115)
@@ -165,7 +168,12 @@ watch(minPrice, (selectedPrice) => {
         <DishButton @click="clearTotal()" :title="'すべての計算をクリア'" :font-size="'14px'" />
       </div>
       <div>
-        <DishButton @click="resetMinPrice()" :title="'1皿の値段選択に戻る'" :font-size="'13px'" />
+        <DishButton
+          @click="resetMinPrice()"
+          :title="'1皿の値段選択に戻る'"
+          :font-size="'13px'"
+          :color="'gray'"
+        />
       </div>
     </div>
   </div>
