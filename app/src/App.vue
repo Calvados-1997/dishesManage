@@ -180,10 +180,6 @@ watch(minPrice, (selectedPrice) => {
 </template>
 
 <style scoped>
-.price-select-area > select {
-  font-size: 17px; /* iOS/Androidでの最小推奨サイズ */
-  -webkit-text-size-adjust: 100%;
-}
 .price-select-area > select option {
   font-size: 17px;
 }
