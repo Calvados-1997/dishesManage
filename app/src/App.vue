@@ -2,8 +2,8 @@
 import Toast from 'typescript-toastify'
 import { ref, watch } from 'vue'
 import DishButton from './components/DishButton.vue'
-import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
 import DishInput from './components/DishInput.vue'
+import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
 
 const total = ref<number>(0)
 const dishCntMap = new Map<number, number>()
@@ -35,11 +35,13 @@ function clearTotal() {
 function addCustomDishCount(value: unknown) {
   const price = Number(value)
   if (Number.isNaN(price)) {
+    // 数値変換に失敗した場合
     new Toast({
       position: 'top-center',
       toastMsg: '値段は数値で入力してください。',
       autoCloseTime: 3000,
       canClose: true,
+      showProgress: false,
       type: 'error',
       theme: 'light',
     })
@@ -48,10 +50,11 @@ function addCustomDishCount(value: unknown) {
     dishCntMap.set(price, 1)
     total.value += price
     new Toast({
-      position: 'top-right',
+      position: 'top-center',
       toastMsg: '追加に成功しました。',
       autoCloseTime: 3000,
       canClose: true,
+      showProgress: false,
       type: 'success',
       theme: 'light',
     })
