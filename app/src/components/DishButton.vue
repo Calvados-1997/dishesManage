@@ -21,7 +21,7 @@ const styleObject = {
 </script>
 
 <template>
-  <button class="btn" type="button" :style="styleObject">{{ props.title }}</button>
+  <button class="btn border" type="button" :style="styleObject">{{ props.title }}</button>
 </template>
 
 <style lang="css">
