@@ -33,6 +33,10 @@ function clearTotal() {
 }
 
 function addCustomDishCount(value: unknown) {
+  if (value === undefined) {
+    return
+  }
+
   const price = Number(value)
   if (Number.isNaN(price)) {
     // 数値変換に失敗した場合
@@ -45,6 +49,7 @@ function addCustomDishCount(value: unknown) {
       type: 'error',
       theme: 'light',
     })
+    return
   }
 
   const samePricefound = pricesPreset.value?.find((element) => element === price)
@@ -82,6 +87,7 @@ function clearCustomDishCount() {
 }
 
 function resetMinPrice() {
+  total.value = 0
   minPrice.value = undefined
 }
 
@@ -92,19 +98,19 @@ watch(minPrice, (selectedPrice) => {
   switch (selectedPrice) {
     case '115':
       initDishCntMapping(MENU_PRICE_115)
-      pricesPreset.value = MENU_PRICE_115
+      pricesPreset.value = Array.from(MENU_PRICE_115)
       break
     case '120':
       initDishCntMapping(MENU_PRICE_120)
-      pricesPreset.value = MENU_PRICE_120
+      pricesPreset.value = Array.from(MENU_PRICE_120)
       break
     case '130':
       initDishCntMapping(MENU_PRICE_130)
-      pricesPreset.value = MENU_PRICE_130
+      pricesPreset.value = Array.from(MENU_PRICE_130)
       break
     case '150':
       initDishCntMapping(MENU_PRICE_150)
-      pricesPreset.value = MENU_PRICE_150
+      pricesPreset.value = Array.from(MENU_PRICE_150)
       break
     default:
       console.error(
@@ -180,6 +186,10 @@ watch(minPrice, (selectedPrice) => {
 </template>
 
 <style scoped>
+button:active {
+  transform: scale(0.97) translateY(1px);
+  opacity: 0.9;
+}
 .price-select-area > select option {
   font-size: 17px;
 }
