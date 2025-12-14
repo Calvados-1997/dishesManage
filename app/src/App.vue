@@ -3,7 +3,7 @@ import Toast from 'typescript-toastify'
 import { ref, watch } from 'vue'
 import DishButton from './components/DishButton.vue'
 import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
-import DishInput from './components/dishInput.vue'
+import DishInput from './components/DishInput.vue'
 
 const total = ref<number>(0)
 const dishCntMap = new Map<number, number>()
