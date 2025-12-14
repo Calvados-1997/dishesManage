@@ -110,36 +110,40 @@ watch(minPrice, (selectedPrice) => {
         </select>
       </div>
     </div>
-    <div v-if="minPrice" class="total-area flex justify-between">
-      <p>1皿{{ minPrice }}円〜</p>
-      <p class="text-xl font-bold">合計：{{ total }}円</p>
-    </div>
+    <div v-if="minPrice">
+      <div class="total-area flex justify-between">
+        <p>1皿{{ minPrice }}円〜</p>
+        <p class="text-xl font-bold">合計：{{ total }}円</p>
+      </div>
 
-    <div class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 my-2 gap-3 justify-center">
-      <div class="" v-for="price in dishPrices" :key="price">
-        <DishButton
-          @click="(addTotal(price), addDishCount(price))"
-          class="rounded-t-lg border-b-6"
-          :title="`${price}円`"
-          :font-size="'16px'"
-        />
+      <div
+        class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 my-2 gap-3 justify-center"
+      >
+        <div class="" v-for="price in dishPrices" :key="price">
+          <DishButton
+            @click="(addTotal(price), addDishCount(price))"
+            class="rounded-t-lg border-b-6"
+            :title="`${price}円`"
+            :font-size="'16px'"
+          />
+        </div>
       </div>
-    </div>
-    <div v-if="minPrice" class="explainaion-area flex justify-end">
-      <p class="text-xs m-1">※価格は税込</p>
-    </div>
-    <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
-      <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
-      <DishButton @click="addCustomDishCount(customPrice)" :title="'追加'" :font-size="'16px'" />
-      <DishButton @click="clearCustomDishCount()" :title="'クリア'" :font-size="'16px'" />
-    </div>
-    <div v-if="minPrice" class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
-      <div v-for="price in dishPrices" :key="price">
-        <p>{{ price }}円の皿：{{ dishCntMap.get(price) }}枚</p>
+      <div class="explainaion-area flex justify-end">
+        <p class="text-xs m-1">※価格は税込</p>
       </div>
-    </div>
-    <div v-if="minPrice" class="reset-area my-4">
-      <DishButton @click="clearTotal()" :title="'すべての計算をクリア'" :font-size="'14px'" />
+      <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
+        <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
+        <DishButton @click="addCustomDishCount(customPrice)" :title="'追加'" :font-size="'16px'" />
+        <DishButton @click="clearCustomDishCount()" :title="'クリア'" :font-size="'16px'" />
+      </div>
+      <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
+        <div v-for="price in dishPrices" :key="price">
+          <p>{{ price }}円の皿：{{ dishCntMap.get(price) }}枚</p>
+        </div>
+      </div>
+      <div class="reset-area my-4">
+        <DishButton @click="clearTotal()" :title="'すべての計算をクリア'" :font-size="'14px'" />
+      </div>
     </div>
   </div>
 </template>
