@@ -8,7 +8,7 @@ import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from '
 const total = ref<number>(0)
 const dishCntMap = new Map<number, number>()
 const minPrice = ref<string | undefined>(undefined)
-const dishPrices = ref<number[] | undefined>(undefined)
+const pricesPreset = ref<number[] | undefined>(undefined)
 const customPrice = ref(undefined)
 
 function initDishCntMapping(prices: number[]) {
@@ -29,7 +29,7 @@ function addTotal(price: number) {
 function clearTotal() {
   total.value = 0
   // 皿の枚数カウントを初期化
-  initDishCntMapping(dishPrices.value!)
+  initDishCntMapping(pricesPreset.value!)
 }
 
 function addCustomDishCount(value: unknown) {
@@ -47,7 +47,7 @@ function addCustomDishCount(value: unknown) {
     })
   }
 
-  const samePricefound = dishPrices.value?.find((element) => element === price)
+  const samePricefound = pricesPreset.value?.find((element) => element === price)
   if (samePricefound !== undefined) {
     new Toast({
       position: 'top-center',
@@ -61,8 +61,8 @@ function addCustomDishCount(value: unknown) {
     return
   }
 
-  dishPrices.value?.push(price)
-  dishPrices.value?.sort((a, b) => a - b)
+  pricesPreset.value?.push(price)
+  pricesPreset.value?.sort((a, b) => a - b)
   dishCntMap.set(price, 1)
   total.value += price
   customPrice.value = undefined
@@ -92,19 +92,19 @@ watch(minPrice, (selectedPrice) => {
   switch (selectedPrice) {
     case '115':
       initDishCntMapping(MENU_PRICE_115)
-      dishPrices.value = MENU_PRICE_115
+      pricesPreset.value = MENU_PRICE_115
       break
     case '120':
       initDishCntMapping(MENU_PRICE_120)
-      dishPrices.value = MENU_PRICE_120
+      pricesPreset.value = MENU_PRICE_120
       break
     case '130':
       initDishCntMapping(MENU_PRICE_130)
-      dishPrices.value = MENU_PRICE_130
+      pricesPreset.value = MENU_PRICE_130
       break
     case '150':
       initDishCntMapping(MENU_PRICE_150)
-      dishPrices.value = MENU_PRICE_150
+      pricesPreset.value = MENU_PRICE_150
       break
     default:
       console.error(
@@ -142,7 +142,7 @@ watch(minPrice, (selectedPrice) => {
       <div
         class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 my-2 gap-3 justify-center"
       >
-        <div class="" v-for="price in dishPrices" :key="price">
+        <div class="" v-for="price in pricesPreset" :key="price">
           <DishButton
             @click="(addTotal(price), addDishCount(price))"
             class="rounded-t-lg border-b-6"
@@ -160,7 +160,7 @@ watch(minPrice, (selectedPrice) => {
         <DishButton @click="clearCustomDishCount()" :title="'クリア'" :font-size="'16px'" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
-        <div v-for="price in dishPrices" :key="price">
+        <div v-for="price in pricesPreset" :key="price">
           <p>{{ price }}円の皿：{{ dishCntMap.get(price) }}枚</p>
         </div>
       </div>
@@ -179,4 +179,12 @@ watch(minPrice, (selectedPrice) => {
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.price-select-area > select {
+  font-size: 17px; /* iOS/Androidでの最小推奨サイズ */
+  -webkit-text-size-adjust: 100%;
+}
+.price-select-area > select option {
+  font-size: 17px;
+}
+</style>
