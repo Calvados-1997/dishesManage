@@ -7,17 +7,17 @@ const minPrice = ref<string | undefined>(undefined)
 const dishPrices = ref<number[] | undefined>(undefined)
 
 watch(minPrice, (selectedPrice) => {
-  switch (selectedPrice){
-    case "115":
+  switch (selectedPrice) {
+    case '115':
       dishPrices.value = MENU_PRICE_115
       break
-    case "120":
+    case '120':
       dishPrices.value = MENU_PRICE_120
       break
-    case "130":
+    case '130':
       dishPrices.value = MENU_PRICE_130
       break
-    case "150":
+    case '150':
       dishPrices.value = MENU_PRICE_150
       break
     default:
@@ -27,7 +27,7 @@ watch(minPrice, (selectedPrice) => {
         入力された選択肢が想定している値と一致しません。
         data: ${selectedPrice}
         data_type: ${typeof selectedPrice}
-        `
+        `,
       )
       break
   }
@@ -45,10 +45,10 @@ watch(minPrice, (selectedPrice) => {
     </select>
   </div>
 
-  <div v-for="price in dishPrices">
+  <div v-for="price in dishPrices" :key="price">
     <p>{{ price }}</p>
   </div>
-  
+
   <div v-if="minPrice">
     <p>任意入力</p>
   </div>
