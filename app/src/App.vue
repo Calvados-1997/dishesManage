@@ -204,24 +204,6 @@ function clearAll() {
 </template>
 
 <style scoped>
-button {
-  transition:
-    transform 100ms ease,
-    opacity 100ms ease,
-    box-shadow 100ms ease;
-  -webkit-tap-highlight-color: transparent; /* モバイルの青ハイライトを消す */
-  touch-action: manipulation; /* タップ応答性を改善 */
-}
-button:active {
-  transform: scale(0.96) translateY(1px);
-  opacity: 0.9;
-  box-shadow: none;
-}
-/* キーボード/アクセシビリティ用のフォーカスリング */
-button:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.45); /* sky-400相当 */
-}
 .price-select-area > select option {
   font-size: 17px;
 }
