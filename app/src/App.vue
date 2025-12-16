@@ -5,7 +5,7 @@ import DishButton from './components/DishButton.vue'
 import DishInput from './components/DishInput.vue'
 import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
 
-const total = ref<number>(0)
+const totalPrice = ref<number>(0)
 const dishCntMap = new Map<number, number>()
 const minPrice = ref<string | undefined>(undefined)
 const pricesPreset = ref<number[] | undefined>(undefined)
@@ -57,11 +57,11 @@ function addDishCount(price: number) {
 }
 
 function addTotal(price: number) {
-  total.value += price
+  totalPrice.value += price
 }
 
-function clearTotal() {
-  total.value = 0
+function clearTotalPrice() {
+  totalPrice.value = 0
 }
 
 function addCustomDishCount(value: unknown) {
@@ -101,7 +101,7 @@ function addCustomDishCount(value: unknown) {
   pricesPreset.value?.push(price)
   pricesPreset.value?.sort((a, b) => a - b)
   dishCntMap.set(price, 1)
-  total.value += price
+  totalPrice.value += price
   clearCustomDishCount()
 
   new Toast({
@@ -120,7 +120,7 @@ function clearCustomDishCount() {
 }
 
 function clearAll() {
-  total.value = 0
+  totalPrice.value = 0
   dishCntMap.clear()
   minPrice.value = undefined
   pricesPreset.value = undefined
@@ -142,13 +142,14 @@ function clearAll() {
       </div>
     </div>
     <div v-else>
-      <div class="total-area flex justify-between">
+      <header class="total-area border-b border-slate-300 flex justify-between">
         <p>1皿{{ minPrice }}円〜</p>
-        <p class="text-xl font-bold">合計：{{ total }}円</p>
-      </div>
+        <p class="text-xl">2枚</p>
+        <p class="text-xl font-bold">合計：{{ totalPrice }}円</p>
+      </header>
 
       <div
-        class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 my-2 gap-3 justify-center"
+        class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 mt-4 gap-3 justify-center"
       >
         <div class="" v-for="price in pricesPreset" :key="price">
           <DishButton
@@ -164,7 +165,13 @@ function clearAll() {
       </div>
       <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
         <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
-        <DishButton @click="addCustomDishCount(customPrice)" :title="'追加'" :font-size="'16px'" />
+        <DishButton
+          class="bg-black"
+          @click="addCustomDishCount(customPrice)"
+          :title="'追加'"
+          :font-size="'16px'"
+          color="white"
+        />
         <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" :font-size="'14px'" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
@@ -174,7 +181,7 @@ function clearAll() {
       </div>
       <div class="reset-area my-4">
         <DishButton
-          @click="(clearTotal(), initDishCntMapping(pricesPreset ?? []))"
+          @click="(clearTotalPrice(), initDishCntMapping(pricesPreset ?? []))"
           :title="'すべての計算をクリア'"
           :font-size="'14px'"
         />
@@ -192,9 +199,23 @@ function clearAll() {
 </template>
 
 <style scoped>
+button {
+  transition:
+    transform 100ms ease,
+    opacity 100ms ease,
+    box-shadow 100ms ease;
+  -webkit-tap-highlight-color: transparent; /* モバイルの青ハイライトを消す */
+  touch-action: manipulation; /* タップ応答性を改善 */
+}
 button:active {
-  transform: scale(0.97) translateY(1px);
+  transform: scale(0.96) translateY(1px);
   opacity: 0.9;
+  box-shadow: none;
+}
+/* キーボード/アクセシビリティ用のフォーカスリング */
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.45); /* sky-400相当 */
 }
 .price-select-area > select option {
   font-size: 17px;
