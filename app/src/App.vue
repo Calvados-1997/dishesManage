@@ -6,6 +6,7 @@ import DishInput from './components/DishInput.vue'
 import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
 
 const totalPrice = ref<number>(0)
+const totalDishCount = ref<number>(0)
 const dishCntMap = new Map<number, number>()
 const minPrice = ref<string | undefined>(undefined)
 const pricesPreset = ref<number[] | undefined>(undefined)
@@ -58,10 +59,12 @@ function addDishCount(price: number) {
 
 function addTotal(price: number) {
   totalPrice.value += price
+  totalDishCount.value++
 }
 
-function clearTotalPrice() {
+function clearTotal() {
   totalPrice.value = 0
+  totalDishCount.value = 0
 }
 
 function addCustomDishCount(value: unknown) {
@@ -102,6 +105,7 @@ function addCustomDishCount(value: unknown) {
   pricesPreset.value?.sort((a, b) => a - b)
   dishCntMap.set(price, 1)
   totalPrice.value += price
+  totalDishCount.value++
   clearCustomDishCount()
 
   new Toast({
@@ -144,7 +148,7 @@ function clearAll() {
     <div v-else>
       <header class="total-area border-b border-slate-300 flex justify-between">
         <p>1皿{{ minPrice }}円〜</p>
-        <p class="text-xl">2枚</p>
+        <p class="text-xl">{{ totalDishCount }}枚</p>
         <p class="text-xl font-bold">合計：{{ totalPrice }}円</p>
       </header>
 
@@ -172,7 +176,12 @@ function clearAll() {
           :font-size="'16px'"
           color="white"
         />
-        <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" :font-size="'14px'" />
+        <DishButton
+          @click="clearCustomDishCount()"
+          :title="'入力クリア'"
+          :font-size="'13px'"
+          color="gray"
+        />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
         <div v-for="price in pricesPreset" :key="price">
@@ -181,18 +190,14 @@ function clearAll() {
       </div>
       <div class="reset-area my-4">
         <DishButton
-          @click="(clearTotalPrice(), initDishCntMapping(pricesPreset ?? []))"
+          class="t bg-red-400 border-0"
+          @click="(clearTotal(), initDishCntMapping(pricesPreset ?? []))"
           :title="'すべての計算をクリア'"
           :font-size="'14px'"
         />
       </div>
       <div>
-        <DishButton
-          @click="clearAll()"
-          :title="'1皿の値段選択に戻る'"
-          :font-size="'13px'"
-          :color="'gray'"
-        />
+        <DishButton @click="clearAll()" :title="'1皿の値段選択に戻る'" :font-size="'13px'" />
       </div>
     </div>
   </div>
