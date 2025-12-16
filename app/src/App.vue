@@ -17,6 +17,40 @@ function initDishCntMapping(prices: number[]) {
   }
 }
 
+watch(minPrice, (selectedPrice) => {
+  if (selectedPrice === undefined) {
+    return
+  }
+  switch (selectedPrice) {
+    case '115':
+      initDishCntMapping(MENU_PRICE_115)
+      pricesPreset.value = [...MENU_PRICE_115]
+      break
+    case '120':
+      initDishCntMapping(MENU_PRICE_120)
+      pricesPreset.value = [...MENU_PRICE_120]
+      break
+    case '130':
+      initDishCntMapping(MENU_PRICE_130)
+      pricesPreset.value = [...MENU_PRICE_130]
+      break
+    case '150':
+      initDishCntMapping(MENU_PRICE_150)
+      pricesPreset.value = [...MENU_PRICE_150]
+      break
+    default:
+      console.error(
+        `
+        [エラー]
+        入力された選択肢が想定している値と一致しません。
+        data: ${selectedPrice}
+        data_type: ${typeof selectedPrice}
+        `,
+      )
+      break
+  }
+})
+
 function addDishCount(price: number) {
   const prvCnt: number = dishCntMap.get(price) ?? 0
   dishCntMap.set(price, prvCnt + 1)
@@ -28,8 +62,6 @@ function addTotal(price: number) {
 
 function clearTotal() {
   total.value = 0
-  // 皿の枚数カウントを初期化
-  initDishCntMapping(pricesPreset.value!)
 }
 
 function addCustomDishCount(value: unknown) {
@@ -70,7 +102,8 @@ function addCustomDishCount(value: unknown) {
   pricesPreset.value?.sort((a, b) => a - b)
   dishCntMap.set(price, 1)
   total.value += price
-  customPrice.value = undefined
+  clearCustomDishCount()
+
   new Toast({
     position: 'top-center',
     toastMsg: '追加に成功しました。',
@@ -86,44 +119,13 @@ function clearCustomDishCount() {
   customPrice.value = undefined
 }
 
-function resetMinPrice() {
+function clearAll() {
   total.value = 0
+  dishCntMap.clear()
   minPrice.value = undefined
+  pricesPreset.value = undefined
+  customPrice.value = undefined
 }
-
-watch(minPrice, (selectedPrice) => {
-  if (selectedPrice === undefined) {
-    return
-  }
-  switch (selectedPrice) {
-    case '115':
-      initDishCntMapping(MENU_PRICE_115)
-      pricesPreset.value = Array.from(MENU_PRICE_115)
-      break
-    case '120':
-      initDishCntMapping(MENU_PRICE_120)
-      pricesPreset.value = Array.from(MENU_PRICE_120)
-      break
-    case '130':
-      initDishCntMapping(MENU_PRICE_130)
-      pricesPreset.value = Array.from(MENU_PRICE_130)
-      break
-    case '150':
-      initDishCntMapping(MENU_PRICE_150)
-      pricesPreset.value = Array.from(MENU_PRICE_150)
-      break
-    default:
-      console.error(
-        `
-        [エラー]
-        入力された選択肢が想定している値と一致しません。
-        data: ${selectedPrice}
-        data_type: ${typeof selectedPrice}
-        `,
-      )
-      break
-  }
-})
 </script>
 
 <template>
@@ -139,7 +141,7 @@ watch(minPrice, (selectedPrice) => {
         </select>
       </div>
     </div>
-    <div v-if="minPrice">
+    <div v-else>
       <div class="total-area flex justify-between">
         <p>1皿{{ minPrice }}円〜</p>
         <p class="text-xl font-bold">合計：{{ total }}円</p>
@@ -163,7 +165,7 @@ watch(minPrice, (selectedPrice) => {
       <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
         <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
         <DishButton @click="addCustomDishCount(customPrice)" :title="'追加'" :font-size="'16px'" />
-        <DishButton @click="clearCustomDishCount()" :title="'クリア'" :font-size="'16px'" />
+        <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" :font-size="'14px'" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
         <div v-for="price in pricesPreset" :key="price">
@@ -171,11 +173,15 @@ watch(minPrice, (selectedPrice) => {
         </div>
       </div>
       <div class="reset-area my-4">
-        <DishButton @click="clearTotal()" :title="'すべての計算をクリア'" :font-size="'14px'" />
+        <DishButton
+          @click="(clearTotal(), initDishCntMapping(pricesPreset ?? []))"
+          :title="'すべての計算をクリア'"
+          :font-size="'14px'"
+        />
       </div>
       <div>
         <DishButton
-          @click="resetMinPrice()"
+          @click="clearAll()"
           :title="'1皿の値段選択に戻る'"
           :font-size="'13px'"
           :color="'gray'"
