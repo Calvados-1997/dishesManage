@@ -4,71 +4,33 @@ import { ref, watch } from 'vue'
 import DishButton from './components/DishButton.vue'
 import DishInput from './components/DishInput.vue'
 import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from './const/menu_price'
+import { useDishCalculator } from './composables/useDishCalculator'
 
-const totalPrice = ref<number>(0)
-const totalDishCount = ref<number>(0)
-const dishCntMap = new Map<number, number>()
+const { totalPrice, totalDishCount, dishCntMap, addDish, clearAll, clearTotal, initDishCountMap } =
+  useDishCalculator()
 const minPrice = ref<string | undefined>(undefined)
 const pricesPreset = ref<number[] | undefined>(undefined)
 const customPrice = ref(undefined)
 
-function initDishCntMapping(prices: number[]) {
-  for (const p of prices) {
-    dishCntMap.set(p, 0)
-  }
+const MENU_PRESETS: Record<string, number[]> = {
+  '115': MENU_PRICE_115,
+  '120': MENU_PRICE_120,
+  '130': MENU_PRICE_130,
+  '150': MENU_PRICE_150,
 }
 
 watch(minPrice, (selectedPrice) => {
-  if (selectedPrice === undefined) {
-    return
-  }
-  switch (selectedPrice) {
-    case '115':
-      initDishCntMapping(MENU_PRICE_115)
-      pricesPreset.value = [...MENU_PRICE_115]
-      break
-    case '120':
-      initDishCntMapping(MENU_PRICE_120)
-      pricesPreset.value = [...MENU_PRICE_120]
-      break
-    case '130':
-      initDishCntMapping(MENU_PRICE_130)
-      pricesPreset.value = [...MENU_PRICE_130]
-      break
-    case '150':
-      initDishCntMapping(MENU_PRICE_150)
-      pricesPreset.value = [...MENU_PRICE_150]
-      break
-    default:
-      console.error(
-        `
-        [エラー]
-        入力された選択肢が想定している値と一致しません。
-        data: ${selectedPrice}
-        data_type: ${typeof selectedPrice}
-        `,
-      )
-      break
+  if (selectedPrice === undefined) return
+
+  const preset = MENU_PRESETS[selectedPrice]
+  if (preset) {
+    pricesPreset.value = [...preset]
+    initDishCountMap(preset)
   }
 })
 
-function addDishCount(price: number) {
-  const prvCnt: number = dishCntMap.get(price) ?? 0
-  dishCntMap.set(price, prvCnt + 1)
-}
-
-function addTotal(price: number) {
-  totalPrice.value += price
-  totalDishCount.value++
-}
-
-function clearTotal() {
-  totalPrice.value = 0
-  totalDishCount.value = 0
-}
-
-function addCustomDishCount(value: unknown) {
-  if (value === undefined) {
+function addCustomDishCount(value: string) {
+  if (value === '') {
     return
   }
 
@@ -101,8 +63,11 @@ function addCustomDishCount(value: unknown) {
     return
   }
 
+  // 価格一覧に追加
   pricesPreset.value?.push(price)
+  // 値段順に昇順ソート
   pricesPreset.value?.sort((a, b) => a - b)
+  // 追加した皿カウントに1をセット
   dishCntMap.set(price, 1)
   totalPrice.value += price
   totalDishCount.value++
@@ -120,14 +85,6 @@ function addCustomDishCount(value: unknown) {
 }
 
 function clearCustomDishCount() {
-  customPrice.value = undefined
-}
-
-function clearAll() {
-  totalPrice.value = 0
-  dishCntMap.clear()
-  minPrice.value = undefined
-  pricesPreset.value = undefined
   customPrice.value = undefined
 }
 </script>
@@ -157,7 +114,7 @@ function clearAll() {
       >
         <div class="" v-for="price in pricesPreset" :key="price">
           <DishButton
-            @click="(addTotal(price), addDishCount(price))"
+            @click="addDish(price)"
             class="rounded-t-lg border-b-6"
             :title="`${price}円`"
             :font-size="'16px'"
@@ -167,11 +124,19 @@ function clearAll() {
       <div class="explainaion-area flex justify-end">
         <p class="text-xs m-1">※価格は税込</p>
       </div>
+      <div>
+        <DishButton
+          class="t bg-red-400 border-0"
+          @click="(clearTotal(), initDishCountMap(pricesPreset ?? []))"
+          :title="'すべての計算をクリア'"
+          :font-size="'14px'"
+        />
+      </div>
       <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
         <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
         <DishButton
           class="bg-black"
-          @click="addCustomDishCount(customPrice)"
+          @click="addCustomDishCount(customPrice ?? '')"
           :title="'追加'"
           :font-size="'16px'"
           color="white"
@@ -188,16 +153,13 @@ function clearAll() {
           <p>{{ price }}円の皿：{{ dishCntMap.get(price) }}枚</p>
         </div>
       </div>
-      <div class="reset-area my-4">
-        <DishButton
-          class="t bg-red-400 border-0"
-          @click="(clearTotal(), initDishCntMapping(pricesPreset ?? []))"
-          :title="'すべての計算をクリア'"
-          :font-size="'14px'"
-        />
-      </div>
+      <div class="reset-area my-4"></div>
       <div>
-        <DishButton @click="clearAll()" :title="'1皿の値段選択に戻る'" :font-size="'13px'" />
+        <DishButton
+          @click="(clearAll(), (minPrice = undefined))"
+          :title="'1皿の値段選択に戻る'"
+          :font-size="'13px'"
+        />
       </div>
     </div>
   </div>

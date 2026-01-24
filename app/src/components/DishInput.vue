@@ -10,7 +10,7 @@ const props = defineProps({
   },
 })
 
-const input = defineModel('input')
+const input = defineModel<string>('input')
 </script>
 
 <template>
