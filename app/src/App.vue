@@ -125,6 +125,7 @@ function clearCustomDishCount() {
 
 function clearAll() {
   totalPrice.value = 0
+  totalDishCount.value = 0
   dishCntMap.clear()
   minPrice.value = undefined
   pricesPreset.value = undefined
@@ -176,12 +177,7 @@ function clearAll() {
           :font-size="'16px'"
           color="white"
         />
-        <DishButton
-          @click="clearCustomDishCount()"
-          :title="'入力クリア'"
-          :font-size="'13px'"
-          color="gray"
-        />
+        <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" :font-size="'13px'" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
         <div v-for="price in pricesPreset" :key="price">
