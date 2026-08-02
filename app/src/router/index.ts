@@ -7,10 +7,12 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      name: 'home',
       component: HomePage,
     },
     {
       path: '/dish-count',
+      name: 'dish-count',
       component: DishCountPage,
     },
   ],
