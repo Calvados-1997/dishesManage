@@ -11,7 +11,7 @@ const router = createRouter({
       component: HomePage,
     },
     {
-      path: '/dish-count',
+      path: '/dish-count/:stdPrice',
       name: 'dish-count',
       component: DishCountPage,
     },
