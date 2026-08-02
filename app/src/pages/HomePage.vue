@@ -1,10 +1,11 @@
 <script setup lang="ts">
+import { STANDARD_PRICES_OPTIONS } from '@/consts/price'
 import router from '@/router'
 import type { StandardPrice } from '@/types/price'
 import { ref } from 'vue'
 
 const selected = ref<StandardPrice | ''>('')
-const options: StandardPrice[] = ['115', '120', '130', '150']
+const options = STANDARD_PRICES_OPTIONS
 
 const toDishCountPage = () => {
   router.push({name: 'dish-count', params: { 'stdPrice': selected.value }})

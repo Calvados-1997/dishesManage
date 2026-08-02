@@ -6,6 +6,7 @@ import DishInput from '@/components/DishInput.vue'
 import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from '../consts/price'
 import { useRoute } from 'vue-router'
 import router from '@/router'
+import type { StandardPrice } from '@/types/price'
 
 const route = useRoute()
 const totalPrice = ref<number>(0)
@@ -22,7 +23,7 @@ function initDishCntMapping(prices: number[]) {
 }
 
 onMounted(() => {
-    minPrice.value = route.params.stdPrice as string
+    minPrice.value = route.params.stdPrice as StandardPrice
 })
 
 watch(minPrice, (selectedPrice) => {
