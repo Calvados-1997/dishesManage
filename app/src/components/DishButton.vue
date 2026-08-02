@@ -5,22 +5,10 @@ const props = defineProps({
     type: String,
     default: 'タイトル',
   },
-  fontSize: {
-    type: String,
-    default: '10px',
-  },
-  color: {
-    type: String,
-    default: 'black',
-  },
 })
 
 const pressed = ref(false)
 
-const styleObject = {
-  'font-size': props.fontSize,
-  color: props.color,
-}
 </script>
 
 <template>
@@ -32,7 +20,6 @@ const styleObject = {
     @pointerup="pressed = false"
     @pointercancel="pressed = false"
     @pointerleave="pressed = false"
-    :style="styleObject"
   >
     {{ props.title }}
   </button>

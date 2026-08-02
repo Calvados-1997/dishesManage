@@ -159,9 +159,8 @@ function clearAll() {
         <div class="" v-for="price in pricesPreset" :key="price">
           <DishButton
             @click="(addTotal(price), addDishCount(price))"
-            class="rounded-t-lg border-b-6"
+            class="rounded-t-lg border-b-6 text-base"
             :title="`${price}円`"
-            :font-size="'16px'"
           />
         </div>
       </div>
@@ -171,13 +170,11 @@ function clearAll() {
       <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
         <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
         <DishButton
-          class="bg-black"
+          class="bg-black text-white text-base"
           @click="addCustomDishCount(customPrice)"
           :title="'追加'"
-          :font-size="'16px'"
-          color="white"
         />
-        <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" :font-size="'13px'" />
+        <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" class="text-sm" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
         <div v-for="price in pricesPreset" :key="price">
@@ -186,14 +183,13 @@ function clearAll() {
       </div>
       <div class="reset-area my-4">
         <DishButton
-          class="t bg-red-400 border-0"
+          class="t bg-red-400 border-0 text-sm"
           @click="(clearTotal(), initDishCntMapping(pricesPreset ?? []))"
           :title="'すべての計算をクリア'"
-          :font-size="'14px'"
         />
       </div>
       <div>
-        <DishButton @click="clearAll()" :title="'1皿の値段選択に戻る'" :font-size="'13px'" />
+        <DishButton @click="clearAll()" :title="'1皿の値段選択に戻る'" class="text-sm" />
       </div>
     </div>
   </div>
