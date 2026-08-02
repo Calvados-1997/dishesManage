@@ -1,9 +1,5 @@
 <script setup lang="ts">
 const props = defineProps({
-  inputType: {
-    type: String,
-    default: 'text',
-  },
   placeholder: {
     type: String,
     defautl: '',
@@ -16,7 +12,7 @@ const input = defineModel('input')
 <template>
   <input
     class="border"
-    :type="props.inputType"
+    type="text"
     :placeholder="props.placeholder"
     v-model.trim="input"
   />
