@@ -3,7 +3,7 @@ import Toast from 'typescript-toastify'
 import { onMounted, ref, watch } from 'vue'
 import DishButton from '@/components/DishButton.vue'
 import DishInput from '@/components/DishInput.vue'
-import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from '../consts/menu_price'
+import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from '../consts/price'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 
