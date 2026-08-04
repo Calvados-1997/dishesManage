@@ -3,7 +3,6 @@ import { reactive, ref } from "vue"
 // お皿枚数カウント処理
 export const useDishCounter = () => {
     const dishCountMap = reactive(new Map<number, number>())
-    const pricePreset = ref<number[]>()
     const total = ref<number>(0)
     const totalDishCount = ref<number>(0)
 
@@ -12,10 +11,6 @@ export const useDishCounter = () => {
         for (const p of prices) {
             dishCountMap.set(p, 0)
         }
-    }
-    /** 表示する価格プリセットを設定する */
-    const initPricePreset = (prices: number[]) => {
-        pricePreset.value = [...prices]
     }
     /** 指定価格のカウントを1増やす */
     const addDishCount = (price: number) => {
@@ -68,7 +63,6 @@ export const useDishCounter = () => {
 
     return { 
         initCountMap, 
-        initPricePreset, 
         addDishCount, 
         decreaseDishCount,
         addTotal, 
