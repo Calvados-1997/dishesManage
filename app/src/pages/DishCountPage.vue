@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import Toast from 'typescript-toastify'
-import { onMounted, ref, watch } from 'vue'
+import { onBeforeMount, ref} from 'vue'
 import DishButton from '@/components/DishButton.vue'
 import DishInput from '@/components/DishInput.vue'
-import { MENU_PRICE_115, MENU_PRICE_120, MENU_PRICE_130, MENU_PRICE_150 } from '../consts/price'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import type { StandardPrice } from '@/types/price'
+import { PRICEMAP } from '@/consts/price'
 
 const route = useRoute()
 const totalPrice = ref<number>(0)
 const totalDishCount = ref<number>(0)
 const dishCntMap = new Map<number, number>()
-const minPrice = ref<string>()
-const pricesPreset = ref<number[] | undefined>(undefined)
-const customPrice = ref(undefined)
+const stdPrice = ref<StandardPrice>()
+const pricesPreset = ref<number[]>()
+const customPrice = ref()
 
 function initDishCntMapping(prices: number[]) {
   for (const p of prices) {
@@ -22,42 +22,12 @@ function initDishCntMapping(prices: number[]) {
   }
 }
 
-onMounted(() => {
-    minPrice.value = route.params.stdPrice as StandardPrice
-})
-
-watch(minPrice, (selectedPrice) => {
-  if (selectedPrice === undefined) {
-    return
-  }
-  switch (selectedPrice) {
-    case '115':
-      initDishCntMapping(MENU_PRICE_115)
-      pricesPreset.value = [...MENU_PRICE_115]
-      break
-    case '120':
-      initDishCntMapping(MENU_PRICE_120)
-      pricesPreset.value = [...MENU_PRICE_120]
-      break
-    case '130':
-      initDishCntMapping(MENU_PRICE_130)
-      pricesPreset.value = [...MENU_PRICE_130]
-      break
-    case '150':
-      initDishCntMapping(MENU_PRICE_150)
-      pricesPreset.value = [...MENU_PRICE_150]
-      break
-    default:
-      console.error(
-        `
-        [エラー]
-        入力された選択肢が想定している値と一致しません。
-        data: ${selectedPrice}
-        data_type: ${typeof selectedPrice}
-        `,
-      )
-      break
-  }
+onBeforeMount(() => {
+    // 画面に表示する各お皿をカウントするためのマップを初期化
+    stdPrice.value = route.params.stdPrice as StandardPrice
+    const preset = PRICEMAP[stdPrice.value] || []
+    initDishCntMapping(preset)
+    pricesPreset.value = [...preset]
 })
 
 function addDishCount(price: number) {
@@ -135,7 +105,7 @@ function clearAll() {
   totalPrice.value = 0
   totalDishCount.value = 0
   dishCntMap.clear()
-  minPrice.value = undefined
+  stdPrice.value = undefined
   pricesPreset.value = undefined
   customPrice.value = undefined
   router.push({name: 'home'})
@@ -146,7 +116,7 @@ function clearAll() {
     <div class="main-content">
     <div>
       <header class="total-area border-b border-slate-300 flex justify-between">
-        <p>1皿{{ minPrice }}円〜</p>
+        <p>1皿{{ stdPrice }}円〜</p>
         <p class="text-xl">{{ totalDishCount }}枚</p>
         <p class="text-xl font-bold">合計：{{ totalPrice }}円</p>
       </header>
@@ -165,7 +135,7 @@ function clearAll() {
       <div class="explainaion-area flex justify-end">
         <p class="text-xs m-1">※価格は税込</p>
       </div>
-      <div v-if="minPrice" class="user-input-area flex gap-1 my-2">
+      <div class="user-input-area flex gap-1 my-2">
         <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
         <DishButton
           class="bg-black text-white text-base"
