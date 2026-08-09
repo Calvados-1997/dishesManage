@@ -3,7 +3,7 @@ import { reactive, ref } from "vue"
 // お皿枚数カウント処理
 export const useDishCounter = () => {
     const dishCountMap = reactive(new Map<number, number>())
-    const total = ref<number>(0)
+    const totalPrice = ref<number>(0)
     const totalDishCount = ref<number>(0)
 
     /** 指定した価格リストでカウントマップを0初期化する */
@@ -44,24 +44,30 @@ export const useDishCounter = () => {
     }
     /** 合計金額に加算する */
     const addTotal = (price: number) => {
-        total.value += price
+        totalPrice.value += price
     }
     /** 合計金額から減算する */
     const decreaseTotal = (price: number) => {
-        total.value -= price
+        totalPrice.value -= price
     }
     /** 合計金額を0にリセットする */
     const resetTotal = () => {
-        total.value = 0
+        totalPrice.value = 0
+    }
+    /** 価格マップに指定された値段が存在するかチェックする */
+    const exsistPrice = (price: number) => {
+        return dishCountMap.has(price)
     }
     /** カスタム価格をマップに追加する */
     const addCustomPriceCount = (price: number, initCount: number = 1) => {
-        if(dishCountMap.has(price)) return
-
         dishCountMap.set(price, initCount)
+        return true
     }
 
     return { 
+        dishCountMap,
+        totalPrice,
+        totalDishCount,
         initCountMap, 
         addDishCount, 
         decreaseDishCount,
@@ -72,6 +78,7 @@ export const useDishCounter = () => {
         resetTotalDishCount,
         resetDishCount,
         resetTotal,
+        exsistPrice,
         addCustomPriceCount
     }
 }
