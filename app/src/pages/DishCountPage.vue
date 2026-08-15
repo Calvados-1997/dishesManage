@@ -47,6 +47,7 @@ const addCustomDishCount = (insertPrice?: number) => {
       .setToastMsg('追加に成功しました。')
       .setType('success')
       .show()
+
   clearCustomDishCount()
 }
 
