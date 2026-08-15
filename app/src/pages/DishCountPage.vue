@@ -27,6 +27,10 @@ const displayPriceList = computed(() => {
 
 const addCustomDishCount = (insertPrice?: number) => {
   if (!insertPrice) {
+    toastBuilder()
+      .setToastMsg('値段を入力してください。')
+      .setType('error')
+      .show()
     return
   }
 
