@@ -31,8 +31,8 @@ const addCustomDishCount = (insertPrice?: number) => {
     return
   }
 
-  const isSuccessfullyAdded = dc.addCustomPriceCount(insertPrice)
-  if(!isSuccessfullyAdded) {
+  const isDupPrice = dc.addCustomPriceCount(insertPrice)
+  if(!isDupPrice) {
     new Toast({
       position: 'top-center',
       toastMsg: '既に追加されている値段です。',
