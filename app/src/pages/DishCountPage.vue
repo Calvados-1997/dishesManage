@@ -2,18 +2,18 @@
 import Toast from 'typescript-toastify'
 import { onBeforeMount, ref} from 'vue'
 import DishButton from '@/components/DishButton.vue'
-import DishInput from '@/components/DishInput.vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
 import type { StandardPrice } from '@/types/price'
 import { PRICEMAP } from '@/consts/price'
 import { useDishCounter } from '@/composables/useDishCounter'
+import DishInputNumber from '@/components/DishInputNumber.vue'
 
 const route = useRoute()
 const dc = useDishCounter()
 const pricePresets = ref<number[]>()
 const stdPrice = ref<StandardPrice>()
-const customPrice = ref()
+const customPrice = ref<number>()
 
 onBeforeMount(() => {
     // 画面に表示する各お皿をカウントするためのマップを初期化
@@ -23,27 +23,12 @@ onBeforeMount(() => {
     dc.initCountMap(presets)
 })
 
-function addCustomDishCount(value: unknown) {
-  if (value === undefined) {
+const addCustomDishCount = (insertPrice?: number) => {
+  if (!insertPrice) {
     return
   }
 
-  const price = Number(value)
-  if (Number.isNaN(price)) {
-    // 数値変換に失敗した場合
-    new Toast({
-      position: 'top-center',
-      toastMsg: '値段は数値で入力してください。',
-      autoCloseTime: 3000,
-      canClose: true,
-      showProgress: false,
-      type: 'error',
-      theme: 'light',
-    })
-    return
-  }
-
-  if(dc.exsistPrice(price)){
+  if(dc.exsistPrice(insertPrice)){
     new Toast({
       position: 'top-center',
       toastMsg: '既に追加されている値段です。',
@@ -56,10 +41,10 @@ function addCustomDishCount(value: unknown) {
     return
   }
 
-  pricePresets.value?.push(price)
+  pricePresets.value?.push(insertPrice)
   pricePresets.value?.sort((a, b) => a - b)
-  dc.addCustomPriceCount(price)
-  dc.addTotal(price)
+  dc.addCustomPriceCount(insertPrice)
+  dc.addTotal(insertPrice)
   dc.addTotalDishCount()
   clearCustomDishCount()
 
@@ -72,6 +57,7 @@ function addCustomDishCount(value: unknown) {
     type: 'success',
     theme: 'light',
   })
+  customPrice.value = undefined
 }
 
 function clearCustomDishCount() {
@@ -119,7 +105,7 @@ const toHome = () => {
         <p class="text-xs m-1">※価格は税込</p>
       </div>
       <div class="user-input-area flex gap-1 my-2">
-        <DishInput v-model:input="customPrice" :placeholder="'値段(税込)'" />
+        <DishInputNumber v-model="customPrice" :placeholder="'値段(税込)'" />
         <DishButton
           class="bg-black text-white text-base"
           @click="addCustomDishCount(customPrice)"
