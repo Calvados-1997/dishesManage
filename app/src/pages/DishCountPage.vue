@@ -15,7 +15,6 @@ const stdPrice = ref<StandardPrice>()
 const customPrice = ref<number>()
 
 onBeforeMount(() => {
-    // 画面に表示する各お皿をカウントするためのマップを初期化
     stdPrice.value = route.params.stdPrice as StandardPrice
     const presets = PRICEMAP[stdPrice.value] || []
     dc.init(presets)
