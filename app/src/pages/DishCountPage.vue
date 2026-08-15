@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import Toast from 'typescript-toastify'
 import { computed, onBeforeMount, ref} from 'vue'
 import DishButton from '@/components/DishButton.vue'
 import { useRoute } from 'vue-router'
@@ -8,6 +7,7 @@ import type { StandardPrice } from '@/types/price'
 import { PRICEMAP } from '@/consts/price'
 import { useDishCounter } from '@/composables/useDishCounter'
 import DishInputNumber from '@/components/DishInputNumber.vue'
+import { toastBuilder } from '@/utils/toast'
 
 const route = useRoute()
 const dc = useDishCounter()
@@ -33,27 +33,17 @@ const addCustomDishCount = (insertPrice?: number) => {
 
   const isDupPrice = dc.addCustomPriceCount(insertPrice)
   if(!isDupPrice) {
-    new Toast({
-      position: 'top-center',
-      toastMsg: '既に追加されている値段です。',
-      autoCloseTime: 3000,
-      canClose: true,
-      showProgress: false,
-      type: 'error',
-      theme: 'light',
-    })
+    toastBuilder()
+      .setToastMsg('既に追加されている値段です。')
+      .setType('error')
+      .show()
     return
   }
 
-  new Toast({
-    position: 'top-center',
-    toastMsg: '追加に成功しました。',
-    autoCloseTime: 3000,
-    canClose: true,
-    showProgress: false,
-    type: 'success',
-    theme: 'light',
-  })
+  toastBuilder()
+      .setToastMsg('追加に成功しました。')
+      .setType('success')
+      .show()
   clearCustomDishCount()
 }
 
