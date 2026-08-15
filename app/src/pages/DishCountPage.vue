@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Toast from 'typescript-toastify'
-import { onBeforeMount, ref} from 'vue'
+import { computed, onBeforeMount, ref} from 'vue'
 import DishButton from '@/components/DishButton.vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
@@ -11,7 +11,6 @@ import DishInputNumber from '@/components/DishInputNumber.vue'
 
 const route = useRoute()
 const dc = useDishCounter()
-const pricePresets = ref<number[]>()
 const stdPrice = ref<StandardPrice>()
 const customPrice = ref<number>()
 
@@ -19,8 +18,12 @@ onBeforeMount(() => {
     // 画面に表示する各お皿をカウントするためのマップを初期化
     stdPrice.value = route.params.stdPrice as StandardPrice
     const presets = PRICEMAP[stdPrice.value] || []
-    pricePresets.value = presets
-    dc.initCountMap(presets)
+    dc.init(presets)
+})
+
+const displayPriceList = computed(() => {
+  const priceList = Array.from(dc.dishCountMap.keys())
+  return priceList.sort((a, b) => a - b)
 })
 
 const addCustomDishCount = (insertPrice?: number) => {
@@ -28,7 +31,8 @@ const addCustomDishCount = (insertPrice?: number) => {
     return
   }
 
-  if(dc.exsistPrice(insertPrice)){
+  const isSuccessfullyAdded = dc.addCustomPriceCount(insertPrice)
+  if(!isSuccessfullyAdded) {
     new Toast({
       position: 'top-center',
       toastMsg: '既に追加されている値段です。',
@@ -41,13 +45,6 @@ const addCustomDishCount = (insertPrice?: number) => {
     return
   }
 
-  pricePresets.value?.push(insertPrice)
-  pricePresets.value?.sort((a, b) => a - b)
-  dc.addCustomPriceCount(insertPrice)
-  dc.addTotal(insertPrice)
-  dc.addTotalDishCount()
-  clearCustomDishCount()
-
   new Toast({
     position: 'top-center',
     toastMsg: '追加に成功しました。',
@@ -57,7 +54,7 @@ const addCustomDishCount = (insertPrice?: number) => {
     type: 'success',
     theme: 'light',
   })
-  customPrice.value = undefined
+  clearCustomDishCount()
 }
 
 function clearCustomDishCount() {
@@ -65,15 +62,11 @@ function clearCustomDishCount() {
 }
 
 const addCount = (price: number) => {
-  dc.addDishCount(price)
-  dc.addTotalDishCount()
-  dc.addTotal(price)
+  dc.addCount(price)
 }
 
 const resetAllCount = () => {
-  dc.resetDishCount()
-  dc.resetTotalDishCount()
-  dc.resetTotal()
+  dc.resetAllCount()
 }
 
 const toHome = () => {
@@ -93,7 +86,7 @@ const toHome = () => {
       <div
         class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 mt-4 gap-3 justify-center"
       >
-        <div class="" v-for="price in pricePresets" :key="price">
+        <div class="" v-for="price in displayPriceList" :key="price">
           <DishButton
             @click="addCount(price)"
             class="rounded-t-lg border-b-6 text-base"
@@ -114,7 +107,7 @@ const toHome = () => {
         <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" class="text-sm" />
       </div>
       <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
-        <div v-for="price in pricePresets" :key="price">
+        <div v-for="price in displayPriceList" :key="price">
           <p>{{ price }}円の皿：{{ dc.dishCountMap.get(price) }}枚</p>
         </div>
       </div>
