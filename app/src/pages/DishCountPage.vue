@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, ref} from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import DishButton from '@/components/DishButton.vue'
 import { useRoute } from 'vue-router'
 import router from '@/router'
