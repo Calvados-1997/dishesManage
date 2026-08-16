@@ -5,6 +5,10 @@ const props = defineProps({
     type: String,
     default: 'タイトル',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const pressed = ref(false)
@@ -15,7 +19,8 @@ const pressed = ref(false)
   <button
     type="button"
     class="btn border transition focus:outline-none active:scale-95 active:opacity-80"
-    :class="{ 'scale-95 opacity-80 shadow-none': pressed }"
+    :class="{ 'scale-95 opacity-80 shadow-none': pressed, 'opacity-30 cursor-not-allowed': props.disabled }"
+    :disabled="props.disabled"
     @pointerdown="pressed = true"
     @pointerup="pressed = false"
     @pointercancel="pressed = false"
