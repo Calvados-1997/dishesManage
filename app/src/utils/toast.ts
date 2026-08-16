@@ -4,6 +4,7 @@ import type { Position, ToastType } from "typescript-toastify/lib/type/type"
 /**
  * Toast builder class.
  * 
+ * toast library used:
  * https://typescript-toastify.vercel.app/
  */
 class ToastBuilder {
