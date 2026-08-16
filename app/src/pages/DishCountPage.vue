@@ -111,7 +111,7 @@ const toHome = () => {
           <p>{{ price }}円の皿：{{ dc.dishCountMap.get(price) }}枚</p>
           <div class="flex gap-1">
             <DishButton @click="addCount(price)" :title="'＋'" class="text-sm" />
-            <DishButton @click="decreaseCount(price)" :title="'ー'" class="text-sm text-red-400" />
+            <DishButton @click="decreaseCount(price)" :title="'ー'" class="text-sm text-red-400" :disabled="!dc.dishCountMap.get(price)" />
           </div>
         </div>
       </div>
