@@ -78,7 +78,7 @@ const toHome = () => {
       </header>
 
       <div
-        class="dish-price-area h-60 overflow-y-auto flex flex-wrap px-2 mt-4 gap-3 justify-center"
+        class="dish-price-area mt-3 grid justify-items-center-safe grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-9 gap-2"
       >
         <div class="" v-for="price in displayPriceList" :key="price">
           <DishButton
