@@ -59,6 +59,12 @@ const addCount = (price: number) => {
   dc.addCount(price)
 }
 
+const decreaseCount = (price: number) => {
+  if(dc.totalPrice.value > 0 && dc.totalDishCount.value > 0){
+    dc.decreaseCount(price)
+  }
+}
+
 const resetAllCount = () => {
   dc.resetAllCount()
 }
@@ -100,14 +106,18 @@ const toHome = () => {
         />
         <DishButton @click="clearCustomDishCount()" :title="'入力クリア'" class="text-sm" />
       </div>
-      <div class="summary-area border px-2 flex flex-col gap-3 h-80 overflow-y-auto">
-        <div v-for="price in displayPriceList" :key="price">
+      <div class="summary-area border px-2 py-1 flex flex-col gap-3 h-80 overflow-y-auto">
+        <div v-for="price in displayPriceList" :key="price" class="flex items-center justify-between">
           <p>{{ price }}円の皿：{{ dc.dishCountMap.get(price) }}枚</p>
+          <div class="flex gap-1">
+            <DishButton @click="addCount(price)" :title="'＋'" class="text-sm" />
+            <DishButton @click="decreaseCount(price)" :title="'ー'" class="text-sm text-red-400" />
+          </div>
         </div>
       </div>
       <div class="reset-area my-4">
         <DishButton
-          class="t bg-red-400 border-0 text-sm"
+          class="bg-red-400 border-0 text-sm"
           @click="resetAllCount()"
           :title="'すべての計算をクリア'"
         />
