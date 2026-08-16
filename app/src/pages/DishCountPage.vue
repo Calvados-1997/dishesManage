@@ -6,7 +6,7 @@ import router from '@/router'
 import type { StandardPrice } from '@/types/price'
 import { PRICEMAP } from '@/consts/price'
 import { useDishCounter } from '@/composables/useDishCounter'
-import DishInputNumber from '@/components/DishInputNumber.vue'
+import InputNumber from '@/components/InputNumber.vue'
 import { toastBuilder } from '@/utils/toast'
 
 const route = useRoute()
@@ -92,7 +92,7 @@ const toHome = () => {
         <p class="text-xs m-1">※価格は税込</p>
       </div>
       <div class="user-input-area flex gap-1 my-2">
-        <DishInputNumber v-model="customPrice" :placeholder="'値段(税込)'" />
+        <InputNumber v-model="customPrice" :placeholder="'値段(税込)'" />
         <DishButton
           class="bg-black text-white text-base"
           @click="addCustomDishCount(customPrice)"
