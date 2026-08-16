@@ -19,7 +19,7 @@ const pressed = ref(false)
   <button
     type="button"
     class="btn border transition focus:outline-none active:scale-95 active:opacity-80"
-    :class="{ 'scale-95 opacity-80 shadow-none': pressed, 'opacity-30 cursor-not-allowed': props.disabled }"
+    :class="{ 'scale-95 opacity-80 shadow-none': pressed, 'opacity-30 cursor-not-allowed pointer-events-none': props.disabled }"
     :disabled="props.disabled"
     @pointerdown="pressed = true"
     @pointerup="pressed = false"
